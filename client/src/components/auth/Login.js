@@ -1,8 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { login } from '../../actions/auth';
 
-const Login = () => {
+const Login = ({ login }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -14,29 +17,7 @@ const Login = () => {
 
     const onSubmit = async e => {
         e.preventDefault();
-        if (email === '' || password === '') {
-            console.log('Please enter fields!')
-        } else {
-            const user = {
-                email,
-                password
-            }
-
-            try {
-                const config = {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                };
-
-                const body = JSON.stringify(user);
-
-                const res = await axios.post('http://localhost:5000/api/users', body, config);
-                console.log(res.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        login(email, password);
     }
 
     return (
@@ -60,7 +41,7 @@ const Login = () => {
                     onChange={e => onChange(e)}
                 />
                 </div>
-                <input type="submit" className="btn btn-primary" value="Register" />
+                <input type="submit" className="btn btn-primary" value="Login" />
             </form>
             <p className="my-1">
                 Do have an account? <Link to="/register">Sign Up</Link>
@@ -69,5 +50,9 @@ const Login = () => {
     )
 }
 
+Login.propTypes = {
+    login: PropTypes.func.isRequired,
+};
 
-export default Login
+
+export default connect(null, { login })(Login)
